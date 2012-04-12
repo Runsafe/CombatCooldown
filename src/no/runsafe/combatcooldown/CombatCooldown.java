@@ -3,8 +3,8 @@ package no.runsafe.combatcooldown;
 import java.io.InputStream;
 
 import no.runsafe.framework.RunsafePlugin;
-import no.runsafe.framework.interfaces.IConfigurationDefaults;
-import no.runsafe.framework.interfaces.IConfigurationFile;
+import no.runsafe.framework.configuration.IConfigurationDefaults;
+import no.runsafe.framework.configuration.IConfigurationFile;
 
 public class CombatCooldown extends RunsafePlugin implements IConfigurationFile, IConfigurationDefaults
 {
@@ -19,6 +19,7 @@ public class CombatCooldown extends RunsafePlugin implements IConfigurationFile,
 	{
 		this.addComponent(CombatMonitor.class);
 		this.addComponent(EntityListener.class);
+        this.addComponent(PlayerListener.class);
 	}
 
 	@Override

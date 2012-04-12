@@ -9,5 +9,6 @@ public class Constants {
 	
 	public static String warningEnteringCombat = ChatColor.DARK_RED + "You are now entering PvP combat.";
 	public static String warningLeavingCombat = ChatColor.DARK_RED + "You are now leaving PvP combat.";
+    public static String warningNoCommandInCombat = ChatColor.DARK_RED + "You may not do this during PvP combat.";
 	
 }
