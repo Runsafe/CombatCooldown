@@ -24,15 +24,14 @@ public class EntityListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
 	{
-        if (event.getEntity() instanceof Player)
+        if (event.getEntity() instanceof Player && !event.isCancelled())
         {
             Player victim = (Player) event.getEntity();
             if (event.getEntity() instanceof Player && event.getDamager() instanceof Player)
             {
                 Player attacker = (Player) event.getDamager();
 
-                this.combatMonitor.engageInCombat(victim);
-                this.combatMonitor.engageInCombat(attacker);
+                this.combatMonitor.engageInCombat(victim, attacker);
             }
             else if (event.getDamager() instanceof Arrow)
             {
@@ -41,8 +40,7 @@ public class EntityListener implements Listener
 
                 if (theShooter instanceof Player)
                 {
-                    this.combatMonitor.engageInCombat(victim);
-                    this.combatMonitor.engageInCombat((Player) theShooter);
+                    this.combatMonitor.engageInCombat(victim, (Player) theShooter);
                 }
             }
             else if (event.getDamager() instanceof Projectile)
@@ -52,8 +50,7 @@ public class EntityListener implements Listener
 
                 if (theShooter instanceof Player)
                 {
-                    this.combatMonitor.engageInCombat(victim);
-                    this.combatMonitor.engageInCombat((Player) theShooter);
+                    this.combatMonitor.engageInCombat(victim, (Player) theShooter);
                 }
             }
         }
