@@ -1,6 +1,8 @@
 package no.runsafe.combatcooldown;
 
+import no.runsafe.framework.messaging.PlayerStatus;
 import no.runsafe.framework.output.IOutput;
+import no.runsafe.framework.server.player.RunsafePlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,43 +16,49 @@ public class EntityListener implements Listener
 {
 	private CombatMonitor combatMonitor = null;
     private IOutput output;
+    private PlayerStatus playerStatus;
 	
-	public EntityListener(CombatMonitor combatMonitor, IOutput output)
+	public EntityListener(CombatMonitor combatMonitor, IOutput output, PlayerStatus playerStatus)
 	{
 		this.combatMonitor = combatMonitor;
         this.output = output;
+        this.playerStatus = playerStatus;
     }
 	
 	@EventHandler
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
 	{
-        if (event.getEntity() instanceof Player && !event.isCancelled())
+        if (event.getEntity() instanceof Player)
         {
             Player victim = (Player) event.getEntity();
-            if (event.getEntity() instanceof Player && event.getDamager() instanceof Player)
-            {
-                Player attacker = (Player) event.getDamager();
 
-                this.combatMonitor.engageInCombat(victim, attacker);
-            }
-            else if (event.getDamager() instanceof Arrow)
+            if (this.playerStatus.getVisibility(new RunsafePlayer(victim)))
             {
-                Arrow theArrow = (Arrow) event.getDamager();
-                LivingEntity theShooter = theArrow.getShooter();
-
-                if (theShooter instanceof Player)
+                if (event.getEntity() instanceof Player && event.getDamager() instanceof Player)
                 {
-                    this.combatMonitor.engageInCombat(victim, (Player) theShooter);
+                    Player attacker = (Player) event.getDamager();
+
+                    this.combatMonitor.engageInCombat(victim, attacker);
                 }
-            }
-            else if (event.getDamager() instanceof Projectile)
-            {
-                Projectile theProjectile = (Projectile) event.getDamager();
-                LivingEntity theShooter = theProjectile.getShooter();
-
-                if (theShooter instanceof Player)
+                else if (event.getDamager() instanceof Arrow)
                 {
-                    this.combatMonitor.engageInCombat(victim, (Player) theShooter);
+                    Arrow theArrow = (Arrow) event.getDamager();
+                    LivingEntity theShooter = theArrow.getShooter();
+
+                    if (theShooter instanceof Player)
+                    {
+                        this.combatMonitor.engageInCombat(victim, (Player) theShooter);
+                    }
+                }
+                else if (event.getDamager() instanceof Projectile)
+                {
+                    Projectile theProjectile = (Projectile) event.getDamager();
+                    LivingEntity theShooter = theProjectile.getShooter();
+
+                    if (theShooter instanceof Player)
+                    {
+                        this.combatMonitor.engageInCombat(victim, (Player) theShooter);
+                    }
                 }
             }
         }
