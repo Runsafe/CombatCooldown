@@ -28,7 +28,7 @@ public class EntityListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
 	{
-        if (event.getEntity() instanceof Player)
+        if (event.getEntity() instanceof Player && event.getEntity() != event.getDamager())
         {
             Player victim = (Player) event.getEntity();
 
