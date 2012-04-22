@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="CombatCooldown">
-    <output-path>$PROJECT_DIR$/out/artifacts/CombatCooldown</output-path>
+  <artifact type="jar" build-on-make="true" name="CombatCooldown">
+    <output-path>$PROJECT_DIR$/../out/</output-path>
     <root id="archive" name="CombatCooldown.jar">
       <element id="module-output" name="CombatCooldown" />
       <element id="file-copy" path="$PROJECT_DIR$/defaultConfig.yml" />
