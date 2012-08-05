@@ -8,6 +8,7 @@ import no.runsafe.framework.messaging.Message;
 import no.runsafe.framework.messaging.MessageBusStatus;
 import no.runsafe.framework.messaging.Response;
 import no.runsafe.framework.output.IOutput;
+import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import org.bukkit.World;
@@ -44,19 +45,19 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		this.combatTimers = new HashMap<String, Integer>();
 	}
 
-	private boolean playersInPvPZone(Player firstPlayer, Player secondPlayer)
+	private boolean playersInPvPZone(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
 	{
 		Message bridgeMessage = new Message();
 		bridgeMessage.setTargetService("WorldGuardBridge");
 		bridgeMessage.setQuestion("PLAYER_IN_PVP_ZONE");
 
-		bridgeMessage.setPlayer(new RunsafePlayer(firstPlayer));
+		bridgeMessage.setPlayer(firstPlayer);
 		Response bridgeResponse = this.messagePump.HandleMessage(bridgeMessage);
 
 		if (bridgeResponse.getStatus() == MessageBusStatus.NOT_OK)
 			return false;
 
-		bridgeMessage.setPlayer(new RunsafePlayer(secondPlayer));
+		bridgeMessage.setPlayer(secondPlayer);
 		bridgeResponse = this.messagePump.HandleMessage(bridgeMessage);
 
 		if (bridgeResponse.getStatus() == MessageBusStatus.NOT_OK)
@@ -65,7 +66,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		return true;
 	}
 
-	private boolean monitoringWorld(World world)
+	private boolean monitoringWorld(RunsafeWorld world)
 	{
 		if (this.config.getConfigValueAsList("worlds").contains(world.getName()))
 			return true;
@@ -73,7 +74,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		return false;
 	}
 
-	public void engageInCombat(Player firstPlayer, Player secondPlayer)
+	public void engageInCombat(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
 	{
 		if (this.monitoringWorld(firstPlayer.getWorld()) && this.monitoringWorld(secondPlayer.getWorld()))
 		{
@@ -85,7 +86,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		}
 	}
 
-	private void engagePlayer(Player player)
+	private void engagePlayer(RunsafePlayer player)
 	{
 		if (!isInCombat(player.getName()))
 			player.sendMessage(Constants.warningEnteringCombat);
@@ -93,7 +94,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		this.registerPlayerTimer(player);
 	}
 
-	private void registerPlayerTimer(final Player player)
+	private void registerPlayerTimer(final RunsafePlayer player)
 	{
 		String playerName = player.getName();
 
@@ -112,7 +113,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		}, this.config.getConfigValueAsInt("combatTime")));
 	}
 
-	public void leaveCombat(Player player)
+	public void leaveCombat(RunsafePlayer player)
 	{
 		this.combatTimers.remove(player.getName());
 		player.sendMessage(Constants.warningLeavingCombat);
@@ -125,5 +126,4 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 
 		return false;
 	}
-
 }

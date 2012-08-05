@@ -1,28 +1,31 @@
 package no.runsafe.combatcooldown;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import no.runsafe.framework.event.player.IPlayerCommandPreprocessEvent;
+import no.runsafe.framework.output.IOutput;
+import no.runsafe.framework.server.event.player.RunsafePlayerCommandPreprocessEvent;
+import no.runsafe.framework.server.player.RunsafePlayer;
 
-public class PlayerListener implements Listener
+public class PlayerListener implements IPlayerCommandPreprocessEvent
 {
-    private CombatMonitor combatMonitor = null;
+	private CombatMonitor combatMonitor = null;
 
-    public PlayerListener(CombatMonitor combatMonitor)
-    {
-        this.combatMonitor = combatMonitor;
-    }
+	public PlayerListener(CombatMonitor combatMonitor, IOutput console)
+	{
+		this.combatMonitor = combatMonitor;
+		this.console = console;
+	}
 
-    @EventHandler
-    public void onPlayerCommandPreprocressEvent(PlayerCommandPreprocessEvent event)
-    {
-        Player thePlayer = event.getPlayer();
-        if (this.combatMonitor.isInCombat(thePlayer.getName()))
-        {
-            event.setCancelled(true);
-            thePlayer.sendMessage(Constants.warningNoCommandInCombat);
-        }
-    }
+	@Override
+	public void OnBeforePlayerCommand(RunsafePlayerCommandPreprocessEvent event)
+	{
+		RunsafePlayer thePlayer = event.getPlayer();
+		if(this.combatMonitor.isInCombat(thePlayer.getName()))
+		{
+			console.fine(String.format("Blocking %s from running command %s during combat", thePlayer.getName(), event.getMessage()));
+			event.setCancelled(true);
+			thePlayer.sendMessage(Constants.warningNoCommandInCombat);
+		}
+	}
+
+	private IOutput console;
 }

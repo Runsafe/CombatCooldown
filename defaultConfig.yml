@@ -1,5 +1,5 @@
 #default config.yml
 
- combatTime: 30
- worlds:
+combatTime: 30
+worlds:
  - world

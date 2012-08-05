@@ -1,87 +1,71 @@
 package no.runsafe.combatcooldown;
 
+import no.runsafe.framework.event.entity.IEntityDamageByEntityEvent;
+import no.runsafe.framework.event.entity.IEntityDeathEvent;
 import no.runsafe.framework.messaging.PlayerStatus;
 import no.runsafe.framework.output.IOutput;
+import no.runsafe.framework.server.entity.RunsafeLivingEntity;
+import no.runsafe.framework.server.entity.RunsafeProjectile;
+import no.runsafe.framework.server.event.entity.RunsafeEntityDamageByEntityEvent;
+import no.runsafe.framework.server.event.entity.RunsafeEntityDeathEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 
-public class EntityListener implements Listener
+public class EntityListener implements IEntityDamageByEntityEvent, IEntityDeathEvent
 {
 	private CombatMonitor combatMonitor = null;
-    private IOutput output;
-    private PlayerStatus playerStatus;
-	
+	private IOutput output;
+	private PlayerStatus playerStatus;
+
 	public EntityListener(CombatMonitor combatMonitor, IOutput output, PlayerStatus playerStatus)
 	{
 		this.combatMonitor = combatMonitor;
-        this.output = output;
-        this.playerStatus = playerStatus;
-    }
-	
-	@EventHandler
-	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
-	{
-        if (event.getEntity() instanceof Player && event.getEntity() != event.getDamager())
-        {
-            Player victim = (Player) event.getEntity();
-
-            if (event.getEntity() instanceof Player && event.getDamager() instanceof Player)
-            {
-                if (this.playerStatus.getVisibility(new RunsafePlayer(victim)))
-                {
-                    Player attacker = (Player) event.getDamager();
-
-                    this.combatMonitor.engageInCombat(victim, attacker);
-                }
-            }
-            else if (event.getDamager() instanceof Arrow)
-            {
-                if (this.playerStatus.getVisibility(new RunsafePlayer(victim)))
-                {
-                    Arrow theArrow = (Arrow) event.getDamager();
-                    LivingEntity theShooter = theArrow.getShooter();
-
-                    if (theShooter instanceof Player)
-                    {
-                        this.combatMonitor.engageInCombat(victim, (Player) theShooter);
-                    }
-                }
-            }
-            else if (event.getDamager() instanceof Projectile)
-            {
-                if (this.playerStatus.getVisibility(new RunsafePlayer(victim)))
-                {
-                    Projectile theProjectile = (Projectile) event.getDamager();
-                    LivingEntity theShooter = theProjectile.getShooter();
-
-                    if (theShooter instanceof Player)
-                    {
-                        this.combatMonitor.engageInCombat(victim, (Player) theShooter);
-                    }
-                }
-            }
-        }
+		this.output = output;
+		this.playerStatus = playerStatus;
 	}
 
-    @EventHandler
-    public void onEntityDeathEvent(EntityDeathEvent event)
-    {
-        if (event.getEntity() instanceof Player)
-        {
-            Player thePlayer = (Player) event.getEntity();
+	@Override
+	public void OnEntityDeath(RunsafeEntityDeathEvent event)
+	{
+		if(event.getEntity() instanceof RunsafePlayer)
+		{
+			RunsafePlayer thePlayer = (RunsafePlayer) event.getEntity();
+			output.fine(String.format("Player %s died - allowing commands.", thePlayer.getName()));
+			if(this.combatMonitor.isInCombat(thePlayer.getName()))
+			{
+				this.combatMonitor.leaveCombat(thePlayer);
+			}
+		}
+	}
 
-            if (this.combatMonitor.isInCombat(thePlayer.getName()))
-            {
-                this.combatMonitor.leaveCombat(thePlayer);
-            }
-        }
-    }
+	@Override
+	public void OnEntityDamageByEntity(RunsafeEntityDamageByEntityEvent event)
+	{
+		if(event.getEntity() instanceof RunsafePlayer && event.getEntity() != event.getDamageActor())
+		{
+			RunsafePlayer victim = (RunsafePlayer) event.getEntity();
 
+			if(event.getEntity() instanceof RunsafePlayer && event.getDamageActor() instanceof RunsafePlayer)
+			{
+				if(this.playerStatus.getVisibility(victim))
+				{
+					RunsafePlayer attacker = (RunsafePlayer) event.getDamageActor();
+					output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", attacker.getName(), victim.getName()));
+					this.combatMonitor.engageInCombat(victim, attacker);
+				}
+			} else if(event.getDamageActor() instanceof RunsafeProjectile)
+			{
+				if(this.playerStatus.getVisibility(victim))
+				{
+					RunsafeProjectile theProjectile = (RunsafeProjectile) event.getDamageActor();
+					RunsafeLivingEntity theShooter = theProjectile.getShooter();
+
+					if(theShooter instanceof RunsafePlayer)
+					{
+						output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", ((RunsafePlayer)theShooter).getName(), victim.getName()));
+						this.combatMonitor.engageInCombat(victim, (RunsafePlayer) theShooter);
+					}
+				}
+			}
+		}
+	}
 }

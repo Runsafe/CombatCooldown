@@ -1,5 +1,5 @@
 name: CombatCooldown
-main: no.runsafe.combatcooldown.CombatCooldown
-version: 1.0
+main: no.runsafe.combatcooldown.Plugin
+version: 1.1
 author: Kruithne
 description: Engages players in combat when performing PvP actions, preventing teleporting.
