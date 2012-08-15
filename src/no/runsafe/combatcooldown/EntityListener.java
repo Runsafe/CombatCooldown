@@ -12,10 +12,6 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 
 public class EntityListener implements IEntityDamageByEntityEvent, IEntityDeathEvent
 {
-	private CombatMonitor combatMonitor = null;
-	private IOutput output;
-	private PlayerStatus playerStatus;
-
 	public EntityListener(CombatMonitor combatMonitor, IOutput output, PlayerStatus playerStatus)
 	{
 		this.combatMonitor = combatMonitor;
@@ -26,11 +22,11 @@ public class EntityListener implements IEntityDamageByEntityEvent, IEntityDeathE
 	@Override
 	public void OnEntityDeath(RunsafeEntityDeathEvent event)
 	{
-		if(event.getEntity() instanceof RunsafePlayer)
+		if (event.getEntity() instanceof RunsafePlayer)
 		{
 			RunsafePlayer thePlayer = (RunsafePlayer) event.getEntity();
 			output.fine(String.format("Player %s died - allowing commands.", thePlayer.getName()));
-			if(this.combatMonitor.isInCombat(thePlayer.getName()))
+			if (this.combatMonitor.isInCombat(thePlayer.getName()))
 			{
 				this.combatMonitor.leaveCombat(thePlayer);
 			}
@@ -40,32 +36,38 @@ public class EntityListener implements IEntityDamageByEntityEvent, IEntityDeathE
 	@Override
 	public void OnEntityDamageByEntity(RunsafeEntityDamageByEntityEvent event)
 	{
-		if(event.getEntity() instanceof RunsafePlayer && event.getEntity() != event.getDamageActor())
+		output.fine(String.format("%s engaging in combat with %s", event.getDamageActor().getEntityId(), event.getEntity().getEntityId()));
+		if (event.getEntity() instanceof RunsafePlayer && event.getEntity() != event.getDamageActor())
 		{
 			RunsafePlayer victim = (RunsafePlayer) event.getEntity();
 
-			if(event.getEntity() instanceof RunsafePlayer && event.getDamageActor() instanceof RunsafePlayer)
+			if (event.getEntity() instanceof RunsafePlayer && event.getDamageActor() instanceof RunsafePlayer)
 			{
-				if(this.playerStatus.getVisibility(victim))
+				if (this.playerStatus.getVisibility(victim))
 				{
 					RunsafePlayer attacker = (RunsafePlayer) event.getDamageActor();
 					output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", attacker.getName(), victim.getName()));
 					this.combatMonitor.engageInCombat(victim, attacker);
 				}
-			} else if(event.getDamageActor() instanceof RunsafeProjectile)
+			}
+			else if (event.getDamageActor() instanceof RunsafeProjectile)
 			{
-				if(this.playerStatus.getVisibility(victim))
+				if (this.playerStatus.getVisibility(victim))
 				{
 					RunsafeProjectile theProjectile = (RunsafeProjectile) event.getDamageActor();
 					RunsafeLivingEntity theShooter = theProjectile.getShooter();
 
-					if(theShooter instanceof RunsafePlayer)
+					if (theShooter instanceof RunsafePlayer)
 					{
-						output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", ((RunsafePlayer)theShooter).getName(), victim.getName()));
+						output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", ((RunsafePlayer) theShooter).getName(), victim.getName()));
 						this.combatMonitor.engageInCombat(victim, (RunsafePlayer) theShooter);
 					}
 				}
 			}
 		}
 	}
+
+	private CombatMonitor combatMonitor = null;
+	private IOutput output;
+	private PlayerStatus playerStatus;
 }
