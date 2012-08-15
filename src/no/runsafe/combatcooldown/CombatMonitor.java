@@ -11,8 +11,6 @@ import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 

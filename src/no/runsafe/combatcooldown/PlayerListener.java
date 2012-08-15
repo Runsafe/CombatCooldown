@@ -7,8 +7,6 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 
 public class PlayerListener implements IPlayerCommandPreprocessEvent
 {
-	private CombatMonitor combatMonitor = null;
-
 	public PlayerListener(CombatMonitor combatMonitor, IOutput console)
 	{
 		this.combatMonitor = combatMonitor;
@@ -19,7 +17,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent
 	public void OnBeforePlayerCommand(RunsafePlayerCommandPreprocessEvent event)
 	{
 		RunsafePlayer thePlayer = event.getPlayer();
-		if(this.combatMonitor.isInCombat(thePlayer.getName()))
+		if (this.combatMonitor.isInCombat(thePlayer.getName()))
 		{
 			console.fine(String.format("Blocking %s from running command %s during combat", thePlayer.getName(), event.getMessage()));
 			event.setCancelled(true);
@@ -27,5 +25,6 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent
 		}
 	}
 
+	private CombatMonitor combatMonitor = null;
 	private IOutput console;
 }

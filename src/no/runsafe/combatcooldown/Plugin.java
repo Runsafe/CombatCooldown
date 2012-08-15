@@ -7,12 +7,6 @@ import java.io.InputStream;
 
 public class Plugin extends RunsafePlugin implements IConfigurationFile
 {
-
-	public Plugin()
-	{
-		super();
-	}
-
 	@Override
 	protected void PluginSetup()
 	{
