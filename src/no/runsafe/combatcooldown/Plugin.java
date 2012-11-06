@@ -1,11 +1,12 @@
 package no.runsafe.combatcooldown;
 
+import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.RunsafePlugin;
 import no.runsafe.framework.configuration.IConfigurationFile;
 
 import java.io.InputStream;
 
-public class Plugin extends RunsafePlugin implements IConfigurationFile
+public class Plugin extends RunsafeConfigurablePlugin
 {
 	@Override
 	protected void PluginSetup()
@@ -14,17 +15,4 @@ public class Plugin extends RunsafePlugin implements IConfigurationFile
 		this.addComponent(EntityListener.class);
 		this.addComponent(PlayerListener.class);
 	}
-
-	@Override
-	public InputStream getDefaultConfiguration()
-	{
-		return getResource(Constants.defaultConfigurationFile);
-	}
-
-	@Override
-	public String getConfigurationPath()
-	{
-		return Constants.configurationFile;
-	}
-
 }

@@ -26,5 +26,5 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent
 	}
 
 	private CombatMonitor combatMonitor = null;
-	private IOutput console;
+	private final IOutput console;
 }

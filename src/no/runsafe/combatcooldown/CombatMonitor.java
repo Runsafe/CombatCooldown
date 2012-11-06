@@ -1,6 +1,7 @@
 package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.IPluginDisabled;
 import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.messaging.IMessagePump;
@@ -13,21 +14,20 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 
 import java.util.HashMap;
+import java.util.List;
 
-public class CombatMonitor implements IPluginEnabled, IPluginDisabled
+public class CombatMonitor implements IPluginEnabled, IPluginDisabled, IConfigurationChanged
 {
-	private HashMap<String, Integer> combatTimers;
-	private IConfiguration config;
-	private IScheduler scheduler;
-	private IOutput output;
-	private IMessagePump messagePump;
+	HashMap<String, Integer> combatTimers;
+	final IScheduler scheduler;
+	int combatTime;
+	final IMessagePump messagePump;
+	List<String> pvpWorlds;
 
-	public CombatMonitor(IConfiguration config, IScheduler scheduler, IOutput output, IMessagePump messagePump)
+	public CombatMonitor(IScheduler scheduler, IMessagePump messagePump)
 	{
 		this.combatTimers = null;
-		this.config = config;
 		this.scheduler = scheduler;
-		this.output = output;
 		this.messagePump = messagePump;
 	}
 
@@ -58,18 +58,12 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 		bridgeMessage.setPlayer(secondPlayer);
 		bridgeResponse = this.messagePump.HandleMessage(bridgeMessage);
 
-		if (bridgeResponse.getStatus() == MessageBusStatus.NOT_OK)
-			return false;
-
-		return true;
+		return bridgeResponse.getStatus() != MessageBusStatus.NOT_OK;
 	}
 
 	private boolean monitoringWorld(RunsafeWorld world)
 	{
-		if (this.config.getConfigValueAsList("worlds").contains(world.getName()))
-			return true;
-
-		return false;
+		return pvpWorlds.contains(world.getName());
 	}
 
 	public void engageInCombat(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
@@ -108,7 +102,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 			{
 				leaveCombat(player);
 			}
-		}, this.config.getConfigValueAsInt("combatTime")));
+		}, combatTime));
 	}
 
 	public void leaveCombat(RunsafePlayer player)
@@ -119,9 +113,13 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled
 
 	public boolean isInCombat(String playerName)
 	{
-		if (this.combatTimers.containsKey(playerName))
-			return true;
+		return this.combatTimers.containsKey(playerName);
+	}
 
-		return false;
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		pvpWorlds = configuration.getConfigValueAsList("worlds");
+		combatTime = configuration.getConfigValueAsInt("combatTime");
 	}
 }

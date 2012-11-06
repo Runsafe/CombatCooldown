@@ -68,6 +68,6 @@ public class EntityListener implements IEntityDamageByEntityEvent, IEntityDeathE
 	}
 
 	private CombatMonitor combatMonitor = null;
-	private IOutput output;
-	private PlayerStatus playerStatus;
+	private final IOutput output;
+	private final PlayerStatus playerStatus;
 }
