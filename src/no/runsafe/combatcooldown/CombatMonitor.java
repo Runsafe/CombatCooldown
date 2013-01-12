@@ -81,7 +81,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled, IConfigur
 	private void engagePlayer(RunsafePlayer player)
 	{
 		if (!isInCombat(player.getName()))
-			player.sendMessage(Constants.warningEnteringCombat);
+			player.sendColouredMessage(Constants.warningEnteringCombat);
 
 		this.registerPlayerTimer(player);
 	}
@@ -108,7 +108,7 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled, IConfigur
 	public void leaveCombat(RunsafePlayer player)
 	{
 		this.combatTimers.remove(player.getName());
-		player.sendMessage(Constants.warningLeavingCombat);
+		player.sendColouredMessage(Constants.warningLeavingCombat);
 	}
 
 	public boolean isInCombat(String playerName)

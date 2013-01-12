@@ -21,7 +21,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent
 		{
 			console.fine(String.format("Blocking %s from running command %s during combat", thePlayer.getName(), event.getMessage()));
 			event.setCancelled(true);
-			thePlayer.sendMessage(Constants.warningNoCommandInCombat);
+			thePlayer.sendColouredMessage(Constants.warningNoCommandInCombat);
 		}
 	}
 
