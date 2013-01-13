@@ -1,7 +1,5 @@
 package no.runsafe.combatcooldown;
 
-import org.bukkit.ChatColor;
-
 public class Constants
 {
 	public static final String warningEnteringCombat = "&4You are now entering PvP combat.";

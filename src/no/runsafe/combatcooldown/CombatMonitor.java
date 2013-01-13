@@ -3,12 +3,10 @@ package no.runsafe.combatcooldown;
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.IPluginDisabled;
-import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.messaging.IMessagePump;
 import no.runsafe.framework.messaging.Message;
 import no.runsafe.framework.messaging.MessageBusStatus;
 import no.runsafe.framework.messaging.Response;
-import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
@@ -16,31 +14,36 @@ import no.runsafe.framework.timer.IScheduler;
 import java.util.HashMap;
 import java.util.List;
 
-public class CombatMonitor implements IPluginEnabled, IPluginDisabled, IConfigurationChanged
+public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 {
-	HashMap<String, Integer> combatTimers;
-	final IScheduler scheduler;
-	int combatTime;
-	final IMessagePump messagePump;
-	List<String> pvpWorlds;
-
 	public CombatMonitor(IScheduler scheduler, IMessagePump messagePump)
 	{
-		this.combatTimers = null;
 		this.scheduler = scheduler;
 		this.messagePump = messagePump;
+	}
+
+	public void leaveCombat(RunsafePlayer player)
+	{
+		this.combatTimers.remove(player.getName());
+		player.sendColouredMessage(Constants.warningLeavingCombat);
+	}
+
+	public boolean isInCombat(String playerName)
+	{
+		return this.combatTimers.containsKey(playerName);
+	}
+
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		pvpWorlds = configuration.getConfigValueAsList("worlds");
+		combatTime = configuration.getConfigValueAsInt("combatTime");
 	}
 
 	@Override
 	public void OnPluginDisabled()
 	{
 		this.combatTimers.clear();
-	}
-
-	@Override
-	public void OnPluginEnabled()
-	{
-		this.combatTimers = new HashMap<String, Integer>();
 	}
 
 	private boolean playersInPvPZone(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
@@ -105,21 +108,9 @@ public class CombatMonitor implements IPluginEnabled, IPluginDisabled, IConfigur
 		}, combatTime));
 	}
 
-	public void leaveCombat(RunsafePlayer player)
-	{
-		this.combatTimers.remove(player.getName());
-		player.sendColouredMessage(Constants.warningLeavingCombat);
-	}
-
-	public boolean isInCombat(String playerName)
-	{
-		return this.combatTimers.containsKey(playerName);
-	}
-
-	@Override
-	public void OnConfigurationChanged(IConfiguration configuration)
-	{
-		pvpWorlds = configuration.getConfigValueAsList("worlds");
-		combatTime = configuration.getConfigValueAsInt("combatTime");
-	}
+	final HashMap<String, Integer> combatTimers = new HashMap<String, Integer>();
+	final IScheduler scheduler;
+	final IMessagePump messagePump;
+	List<String> pvpWorlds;
+	int combatTime;
 }
