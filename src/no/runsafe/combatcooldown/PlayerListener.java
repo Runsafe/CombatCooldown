@@ -18,6 +18,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 	@Override
 	public void OnBeforePlayerCommand(RunsafePlayerCommandPreprocessEvent event)
 	{
+		console.fine(String.format("Checking if %s is engaged in combat", event.getPlayer().getName()));
 		RunsafePlayer player = event.getPlayer();
 		if (this.combatMonitor.isInCombat(player.getName()))
 		{
