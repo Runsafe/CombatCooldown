@@ -24,8 +24,11 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	public void leaveCombat(RunsafePlayer player)
 	{
-		this.combatTimers.remove(player.getName());
-		player.sendColouredMessage(Constants.warningLeavingCombat);
+		if (this.combatTimers.containsKey(player.getName()))
+		{
+			this.combatTimers.remove(player.getName());
+			player.sendColouredMessage(Constants.warningLeavingCombat);
+		}
 	}
 
 	public boolean isInCombat(String playerName)

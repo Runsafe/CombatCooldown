@@ -1,36 +1,20 @@
 package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.event.entity.IEntityDamageByEntityEvent;
-import no.runsafe.framework.event.entity.IEntityDeathEvent;
 import no.runsafe.framework.messaging.PlayerStatus;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.entity.RunsafeLivingEntity;
 import no.runsafe.framework.server.entity.RunsafeProjectile;
 import no.runsafe.framework.server.event.entity.RunsafeEntityDamageByEntityEvent;
-import no.runsafe.framework.server.event.entity.RunsafeEntityDeathEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
-public class EntityListener implements IEntityDamageByEntityEvent, IEntityDeathEvent
+public class EntityListener implements IEntityDamageByEntityEvent
 {
 	public EntityListener(CombatMonitor combatMonitor, IOutput output, PlayerStatus playerStatus)
 	{
 		this.combatMonitor = combatMonitor;
 		this.output = output;
 		this.playerStatus = playerStatus;
-	}
-
-	@Override
-	public void OnEntityDeath(RunsafeEntityDeathEvent event)
-	{
-		if (event.getEntity() instanceof RunsafePlayer)
-		{
-			RunsafePlayer thePlayer = (RunsafePlayer) event.getEntity();
-			output.fine(String.format("Player %s died - allowing commands.", thePlayer.getName()));
-			if (this.combatMonitor.isInCombat(thePlayer.getName()))
-			{
-				this.combatMonitor.leaveCombat(thePlayer);
-			}
-		}
 	}
 
 	@Override
