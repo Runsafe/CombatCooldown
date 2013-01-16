@@ -7,6 +7,7 @@ import no.runsafe.framework.messaging.IMessagePump;
 import no.runsafe.framework.messaging.Message;
 import no.runsafe.framework.messaging.MessageBusStatus;
 import no.runsafe.framework.messaging.Response;
+import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
@@ -16,10 +17,11 @@ import java.util.List;
 
 public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 {
-	public CombatMonitor(IScheduler scheduler, IMessagePump messagePump)
+	public CombatMonitor(IScheduler scheduler, IMessagePump messagePump, IOutput output)
 	{
 		this.scheduler = scheduler;
 		this.messagePump = messagePump;
+		this.console = output;
 	}
 
 	public void leaveCombat(RunsafePlayer player)
@@ -74,10 +76,13 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	public void engageInCombat(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
 	{
+		console.fine(String.format("Engaging %s and %s in combat..", firstPlayer.getName(), secondPlayer.getName()));
 		if (this.monitoringWorld(firstPlayer.getWorld()) && this.monitoringWorld(secondPlayer.getWorld()))
 		{
+			console.fine(String.format("Engaging %s and %s in combat in world %s", firstPlayer.getName(), secondPlayer.getName(), firstPlayer.getWorld().getName()));
 			if (this.playersInPvPZone(firstPlayer, secondPlayer))
 			{
+				console.fine(String.format("Engaging %s and %s in combat in pvp area", firstPlayer.getName(), secondPlayer.getName()));
 				this.engagePlayer(firstPlayer);
 				this.engagePlayer(secondPlayer);
 			}
@@ -116,4 +121,5 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	final IMessagePump messagePump;
 	List<String> pvpWorlds;
 	int combatTime;
+	IOutput console;
 }
