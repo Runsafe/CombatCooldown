@@ -4,9 +4,6 @@ import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.IPluginDisabled;
 import no.runsafe.framework.messaging.IMessagePump;
-import no.runsafe.framework.messaging.Message;
-import no.runsafe.framework.messaging.MessageBusStatus;
-import no.runsafe.framework.messaging.Response;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.player.RunsafePlayer;
@@ -51,24 +48,6 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		this.combatTimers.clear();
 	}
 
-	private boolean playersInPvPZone(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
-	{
-		Message bridgeMessage = new Message();
-		bridgeMessage.setTargetService("WorldGuardBridge");
-		bridgeMessage.setQuestion("PLAYER_IN_PVP_ZONE");
-
-		bridgeMessage.setPlayer(firstPlayer);
-		Response bridgeResponse = this.messagePump.HandleMessage(bridgeMessage);
-
-		if (bridgeResponse.getStatus() == MessageBusStatus.NOT_OK)
-			return false;
-
-		bridgeMessage.setPlayer(secondPlayer);
-		bridgeResponse = this.messagePump.HandleMessage(bridgeMessage);
-
-		return bridgeResponse.getStatus() != MessageBusStatus.NOT_OK;
-	}
-
 	private boolean monitoringWorld(RunsafeWorld world)
 	{
 		return pvpWorlds.contains(world.getName());
@@ -80,7 +59,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		if (this.monitoringWorld(firstPlayer.getWorld()) && this.monitoringWorld(secondPlayer.getWorld()))
 		{
 			console.fine(String.format("Engaging %s and %s in combat in world %s", firstPlayer.getName(), secondPlayer.getName(), firstPlayer.getWorld().getName()));
-			if (this.playersInPvPZone(firstPlayer, secondPlayer))
+			if (firstPlayer.isPvPFlagged() && secondPlayer.isPvPFlagged())
 			{
 				console.fine(String.format("Engaging %s and %s in combat in pvp area", firstPlayer.getName(), secondPlayer.getName()));
 				this.engagePlayer(firstPlayer);
