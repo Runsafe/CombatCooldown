@@ -1,11 +1,11 @@
 package no.runsafe.combatcooldown;
 
-import no.runsafe.framework.event.entity.IEntityDamageByEntityEvent;
-import no.runsafe.framework.output.IOutput;
-import no.runsafe.framework.server.entity.RunsafeLivingEntity;
-import no.runsafe.framework.server.entity.RunsafeProjectile;
-import no.runsafe.framework.server.event.entity.RunsafeEntityDamageByEntityEvent;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.IOutput;
+import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
+import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
+import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
+import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageByEntityEvent;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 public class EntityListener implements IEntityDamageByEntityEvent
 {

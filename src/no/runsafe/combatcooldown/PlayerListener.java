@@ -1,11 +1,11 @@
 package no.runsafe.combatcooldown;
 
-import no.runsafe.framework.event.player.IPlayerCommandPreprocessEvent;
-import no.runsafe.framework.event.player.IPlayerDeathEvent;
-import no.runsafe.framework.output.IOutput;
-import no.runsafe.framework.server.event.player.RunsafePlayerCommandPreprocessEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.IOutput;
+import no.runsafe.framework.api.event.player.IPlayerCommandPreprocessEvent;
+import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerCommandPreprocessEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerDeathEvent;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDeathEvent
 {
