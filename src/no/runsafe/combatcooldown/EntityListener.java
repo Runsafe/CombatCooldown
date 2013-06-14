@@ -2,7 +2,7 @@ package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
-import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
+import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
 import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageByEntityEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -18,38 +18,33 @@ public class EntityListener implements IEntityDamageByEntityEvent
 	@Override
 	public void OnEntityDamageByEntity(RunsafeEntityDamageByEntityEvent event)
 	{
-		output.fine(String.format("%s engaging in combat with %s", event.getDamageActor().getEntityId(), event.getEntity().getEntityId()));
-		if (event.getEntity() instanceof RunsafePlayer && event.getEntity() != event.getDamageActor())
+		if (event.getEntity() instanceof RunsafePlayer)
 		{
 			RunsafePlayer victim = (RunsafePlayer) event.getEntity();
-			output.fine(String.format("%s attacked by %s", victim.getName(), event.getDamageActor().getEntityId()));
-			if (event.getEntity() instanceof RunsafePlayer && event.getDamageActor() instanceof RunsafePlayer)
+			if (!victim.isVanished())
 			{
-				if (!victim.isVanished())
+				RunsafePlayer attackingPlayer = null;
+				RunsafeEntity attacker = event.getDamageActor();
+				if (attacker instanceof RunsafePlayer)
 				{
-					RunsafePlayer attacker = (RunsafePlayer) event.getDamageActor();
-					output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", attacker.getName(), victim.getName()));
-					this.combatMonitor.engageInCombat(victim, attacker);
+					attackingPlayer = (RunsafePlayer) attacker;
 				}
-				else
-					output.fine("Victim is vanished");
-			}
-			else if (event.getDamageActor() instanceof RunsafeProjectile)
-			{
-				output.fine(String.format("%s attacked by projectile", victim.getName()));
-				if (!victim.isVanished())
+				else if (attacker instanceof RunsafeProjectile)
 				{
-					RunsafeProjectile theProjectile = (RunsafeProjectile) event.getDamageActor();
-					RunsafeLivingEntity theShooter = theProjectile.getShooter();
+					RunsafeEntity shooter = ((RunsafeProjectile) attacker).getShooter();
+					if (shooter instanceof RunsafePlayer)
+						attackingPlayer = (RunsafePlayer) shooter;
+				}
 
-					if (theShooter instanceof RunsafePlayer)
-					{
-						output.fine(String.format("Player %s engaged in PvP with %s - blocking commands.", ((RunsafePlayer) theShooter).getName(), victim.getName()));
-						this.combatMonitor.engageInCombat(victim, (RunsafePlayer) theShooter);
-					}
+				if (attackingPlayer != null && !attackingPlayer.isVanished())
+				{
+					this.combatMonitor.engageInCombat(attackingPlayer, victim);
+					this.output.fine(String.format(
+							"Player %s engaged in PvP with %s - Blocking commands",
+							attackingPlayer.getName(),
+							victim.getName()
+					));
 				}
-				else
-					output.fine("Victim is vanished");
 			}
 		}
 	}
