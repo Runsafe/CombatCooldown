@@ -27,6 +27,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				RunsafeEntity attacker = event.getDamageActor();
 				if (attacker instanceof RunsafePlayer)
 				{
+					this.output.write("Player detected");
 					attackingPlayer = (RunsafePlayer) attacker;
 				}
 				else if (attacker instanceof RunsafeProjectile)
