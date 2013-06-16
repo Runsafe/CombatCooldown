@@ -3,6 +3,7 @@ package no.runsafe.combatcooldown;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
 import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.entity.ProjectileEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
@@ -33,7 +34,11 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				if (attacker instanceof RunsafePlayer)
 					attackingPlayer = (RunsafePlayer) attacker;
 				else if (attacker instanceof RunsafeProjectile)
+				{
+					RunsafeProjectile projectile = (RunsafeProjectile) attacker;
+					if (!(projectile.getEntityType() == ProjectileEntity.Egg || projectile.getEntityType() == ProjectileEntity.Snowball))
 					attackingPlayer = this.findPlayer(((RunsafeProjectile) attacker).getShooter());
+				}
 
 				if (attackingPlayer != null && !attackingPlayer.isVanished())
 				{
