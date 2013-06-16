@@ -8,6 +8,7 @@ import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
 import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageByEntityEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafeCustomEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.List;
@@ -42,12 +43,19 @@ public class EntityListener implements IEntityDamageByEntityEvent
 
 				if (attackingPlayer != null && !attackingPlayer.isVanished())
 				{
-					this.combatMonitor.engageInCombat(attackingPlayer, victim);
-					this.output.fine(String.format(
-							"Player %s engaged in PvP with %s - Blocking commands",
-							attackingPlayer.getName(),
-							victim.getName()
-					));
+					if (attackingPlayer.canSee(victim))
+					{
+						this.combatMonitor.engageInCombat(attackingPlayer, victim);
+						this.output.fine(String.format(
+								"Player %s engaged in PvP with %s - Blocking commands",
+								attackingPlayer.getName(),
+								victim.getName()
+						));
+					}
+					else
+					{
+						new RunsafeCustomEvent(attackingPlayer, "combat.punch.invisible", null);
+					}
 				}
 			}
 		}
