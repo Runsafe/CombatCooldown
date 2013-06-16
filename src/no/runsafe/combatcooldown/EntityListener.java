@@ -26,7 +26,6 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				RunsafePlayer attackingPlayer = null;
 				RunsafeEntity attacker = event.getDamageActor();
 
-				this.output.write("Attacker class: " + attacker.getClass().getName());
 				if (attacker instanceof RunsafePlayer)
 				{
 					attackingPlayer = (RunsafePlayer) attacker;
@@ -34,6 +33,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				else if (attacker instanceof RunsafeProjectile)
 				{
 					RunsafeEntity shooter = ((RunsafeProjectile) attacker).getShooter();
+					this.output.write("Shooter class: " + shooter.getClass().getName());
 					if (shooter instanceof RunsafePlayer)
 						attackingPlayer = (RunsafePlayer) shooter;
 				}
