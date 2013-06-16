@@ -25,6 +25,8 @@ public class EntityListener implements IEntityDamageByEntityEvent
 			{
 				RunsafePlayer attackingPlayer = null;
 				RunsafeEntity attacker = event.getDamageActor();
+
+				this.output.write("Attacker class: " + attacker.getClass().getName());
 				if (attacker instanceof RunsafePlayer)
 				{
 					attackingPlayer = (RunsafePlayer) attacker;
