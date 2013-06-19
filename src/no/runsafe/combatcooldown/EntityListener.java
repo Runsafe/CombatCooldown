@@ -40,7 +40,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 					attackingPlayer = this.findPlayer(((RunsafeProjectile) attacker).getShooter());
 				}
 
-				if (attackingPlayer != null && !attackingPlayer.isVanished() && attackingPlayer.canSee(victim))
+				if (attackingPlayer != null && !attackingPlayer.isVanished() && attackingPlayer.canSee(victim) && !isSamePlayer(victim, attackingPlayer))
 				{
 					this.combatMonitor.engageInCombat(attackingPlayer, victim);
 					this.output.fine(String.format(
@@ -51,6 +51,11 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				}
 			}
 		}
+	}
+
+	private boolean isSamePlayer(RunsafePlayer one, RunsafePlayer two)
+	{
+		return one.getName().equalsIgnoreCase(two.getName());
 	}
 
 	private RunsafePlayer findPlayer(RunsafeLivingEntity entity)
