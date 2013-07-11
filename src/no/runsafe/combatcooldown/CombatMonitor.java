@@ -13,10 +13,9 @@ import java.util.List;
 
 public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 {
-	public CombatMonitor(IScheduler scheduler, IOutput output)
+	public CombatMonitor(IScheduler scheduler)
 	{
 		this.scheduler = scheduler;
-		this.console = output;
 	}
 
 	public void leaveCombat(RunsafePlayer player)
@@ -90,9 +89,8 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		}, combatTime));
 	}
 
-	final HashMap<String, Integer> combatTimers = new HashMap<String, Integer>();
-	final IScheduler scheduler;
-	List<String> pvpWorlds;
-	int combatTime;
-	IOutput console;
+	private final HashMap<String, Integer> combatTimers = new HashMap<String, Integer>();
+	private final IScheduler scheduler;
+	private List<String> pvpWorlds;
+	private int combatTime;
 }

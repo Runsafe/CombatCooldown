@@ -1,6 +1,6 @@
 package no.runsafe.combatcooldown;
 
-public class Constants
+class Constants
 {
 	public static final String warningEnteringCombat = "&4You are now entering PvP combat.";
 	public static final String warningLeavingCombat = "&4You are now leaving PvP combat.";

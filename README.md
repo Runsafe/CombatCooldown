@@ -1,7 +1,7 @@
 CombatCooldown
 ==============
 
-CombatCooldown is a simple lightweight plugin designed to engage players in combat for a specified period of time when performing PvP actions, preventing teleportation.
+CombatCooldown is a simple lightweight plugin designed to engage players in combat for a specified period of time when performing PvP actions, preventing teleporting.
 
 ### Important: Requires the Runsafe Minecraft Plugin Framework
 ### Current Version: 1.0

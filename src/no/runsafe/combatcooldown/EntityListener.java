@@ -37,18 +37,18 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				{
 					RunsafeProjectile projectile = (RunsafeProjectile) attacker;
 					if (!(projectile.getEntityType() == ProjectileEntity.Egg || projectile.getEntityType() == ProjectileEntity.Snowball))
-					attackingPlayer = this.findPlayer(((RunsafeProjectile) attacker).getShooter());
+						attackingPlayer = this.findPlayer(((RunsafeProjectile) attacker).getShooter());
 				}
 
-				if (attackingPlayer != null && !attackingPlayer.isVanished() && attackingPlayer.canSee(victim) && !isSamePlayer(victim, attackingPlayer))
-				{
-					this.combatMonitor.engageInCombat(attackingPlayer, victim);
-					this.output.fine(String.format(
-							"Player %s engaged in PvP with %s - Blocking commands",
-							attackingPlayer.getName(),
-							victim.getName()
-					));
-				}
+				if (attackingPlayer == null || attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
+					return;
+
+				this.combatMonitor.engageInCombat(attackingPlayer, victim);
+				this.output.fine(String.format(
+					"Player %s engaged in PvP with %s - Blocking commands",
+					attackingPlayer.getName(),
+					victim.getName()
+				));
 			}
 		}
 	}
