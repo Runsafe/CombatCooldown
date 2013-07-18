@@ -23,7 +23,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 		if (this.combatMonitor.isInCombat(player.getName()))
 		{
 			console.fine(String.format("Blocking %s from running command %s during combat", player.getName(), event.getMessage()));
-			event.setCancelled(true);
+			event.cancel();
 			player.sendColouredMessage(Constants.warningNoCommandInCombat);
 		}
 	}
