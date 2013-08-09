@@ -62,7 +62,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 	{
 		List<RunsafePlayer> onlinePlayers = RunsafeServer.Instance.getOnlinePlayers();
 		for (RunsafePlayer player : onlinePlayers)
-			if (entity.getEntityId() == player.getEntityId())
+			if (entity != null && player != null && entity.getEntityId() == player.getEntityId())
 				return player;
 
 		return null;
