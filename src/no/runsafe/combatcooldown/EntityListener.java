@@ -1,6 +1,6 @@
 package no.runsafe.combatcooldown;
 
-import no.runsafe.framework.api.IOutput;
+import no.runsafe.framework.api.IDebug;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.entity.ProjectileEntity;
@@ -14,10 +14,10 @@ import java.util.List;
 
 public class EntityListener implements IEntityDamageByEntityEvent
 {
-	public EntityListener(CombatMonitor combatMonitor, IOutput output)
+	public EntityListener(CombatMonitor combatMonitor, IDebug debugger)
 	{
 		this.combatMonitor = combatMonitor;
-		this.output = output;
+		this.debugger = debugger;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 					return;
 
 				this.combatMonitor.engageInCombat(attackingPlayer, victim);
-				this.output.fine(String.format(
+				this.debugger.debugFine(String.format(
 					"Player %s engaged in PvP with %s - Blocking commands",
 					attackingPlayer.getName(),
 					victim.getName()
@@ -69,5 +69,5 @@ public class EntityListener implements IEntityDamageByEntityEvent
 	}
 
 	private CombatMonitor combatMonitor = null;
-	private final IOutput output;
+	private final IDebug debugger;
 }
