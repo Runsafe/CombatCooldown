@@ -2,10 +2,10 @@ package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.IWorld;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeWorld;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +44,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		this.combatTimers.clear();
 	}
 
-	private boolean monitoringWorld(RunsafeWorld world)
+	private boolean monitoringWorld(IWorld world)
 	{
 		return pvpWorlds.contains(world.getName());
 	}
