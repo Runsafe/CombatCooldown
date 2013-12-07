@@ -1,12 +1,11 @@
 package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IConfiguration;
-import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeWorld;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		this.scheduler = scheduler;
 	}
 
-	public void leaveCombat(RunsafePlayer player)
+	public void leaveCombat(IPlayer player)
 	{
 		if (this.combatTimers.containsKey(player.getName()))
 		{
@@ -50,7 +49,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		return pvpWorlds.contains(world.getName());
 	}
 
-	public void engageInCombat(RunsafePlayer firstPlayer, RunsafePlayer secondPlayer)
+	public void engageInCombat(IPlayer firstPlayer, IPlayer secondPlayer)
 	{
 		if (this.monitoringWorld(firstPlayer.getWorld()) && this.monitoringWorld(secondPlayer.getWorld()))
 		{
@@ -62,7 +61,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		}
 	}
 
-	private void engagePlayer(RunsafePlayer player)
+	private void engagePlayer(IPlayer player)
 	{
 		if (!isInCombat(player.getName()))
 			player.sendColouredMessage(Constants.warningEnteringCombat);
@@ -70,7 +69,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		this.registerPlayerTimer(player);
 	}
 
-	private void registerPlayerTimer(final RunsafePlayer player)
+	private void registerPlayerTimer(final IPlayer player)
 	{
 		String playerName = player.getName();
 

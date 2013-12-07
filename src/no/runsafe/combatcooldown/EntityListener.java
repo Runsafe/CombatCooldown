@@ -2,13 +2,13 @@ package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IDebug;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
+import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.entity.ProjectileEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
 import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageByEntityEvent;
-import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.List;
 
@@ -23,16 +23,16 @@ public class EntityListener implements IEntityDamageByEntityEvent
 	@Override
 	public void OnEntityDamageByEntity(RunsafeEntityDamageByEntityEvent event)
 	{
-		if (event.getEntity() instanceof RunsafePlayer)
+		if (event.getEntity() instanceof IPlayer)
 		{
-			RunsafePlayer victim = (RunsafePlayer) event.getEntity();
+			IPlayer victim = (IPlayer) event.getEntity();
 			if (!victim.isVanished())
 			{
-				RunsafePlayer attackingPlayer = null;
+				IPlayer attackingPlayer = null;
 				RunsafeEntity attacker = event.getDamageActor();
 
-				if (attacker instanceof RunsafePlayer)
-					attackingPlayer = (RunsafePlayer) attacker;
+				if (attacker instanceof IPlayer)
+					attackingPlayer = (IPlayer) attacker;
 				else if (attacker instanceof RunsafeProjectile)
 				{
 					RunsafeProjectile projectile = (RunsafeProjectile) attacker;
@@ -53,15 +53,15 @@ public class EntityListener implements IEntityDamageByEntityEvent
 		}
 	}
 
-	private boolean isSamePlayer(RunsafePlayer one, RunsafePlayer two)
+	private boolean isSamePlayer(IPlayer one, IPlayer two)
 	{
 		return one.getName().equalsIgnoreCase(two.getName());
 	}
 
-	private RunsafePlayer findPlayer(RunsafeLivingEntity entity)
+	private IPlayer findPlayer(RunsafeLivingEntity entity)
 	{
-		List<RunsafePlayer> onlinePlayers = RunsafeServer.Instance.getOnlinePlayers();
-		for (RunsafePlayer player : onlinePlayers)
+		List<IPlayer> onlinePlayers = RunsafeServer.Instance.getOnlinePlayers();
+		for (IPlayer player : onlinePlayers)
 			if (entity != null && player != null && entity.getEntityId() == player.getEntityId())
 				return player;
 
