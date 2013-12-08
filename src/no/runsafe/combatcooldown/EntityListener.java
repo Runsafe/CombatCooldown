@@ -1,9 +1,9 @@
 package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IDebug;
+import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
 import no.runsafe.framework.api.player.IPlayer;
-import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.entity.ProjectileEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
@@ -14,10 +14,11 @@ import java.util.List;
 
 public class EntityListener implements IEntityDamageByEntityEvent
 {
-	public EntityListener(CombatMonitor combatMonitor, IDebug debugger)
+	public EntityListener(CombatMonitor combatMonitor, IDebug debugger, IServer server)
 	{
 		this.combatMonitor = combatMonitor;
 		this.debugger = debugger;
+		this.server = server;
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 
 	private IPlayer findPlayer(RunsafeLivingEntity entity)
 	{
-		List<IPlayer> onlinePlayers = RunsafeServer.Instance.getOnlinePlayers();
+		List<IPlayer> onlinePlayers = server.getOnlinePlayers();
 		for (IPlayer player : onlinePlayers)
 			if (entity != null && player != null && entity.getEntityId() == player.getEntityId())
 				return player;
@@ -70,4 +71,5 @@ public class EntityListener implements IEntityDamageByEntityEvent
 
 	private CombatMonitor combatMonitor = null;
 	private final IDebug debugger;
+	private final IServer server;
 }
