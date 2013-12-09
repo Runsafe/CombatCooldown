@@ -1,8 +1,8 @@
 package no.runsafe.combatcooldown;
 
-import no.runsafe.framework.api.IDebug;
 import no.runsafe.framework.api.event.player.IPlayerCommandPreprocessEvent;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
+import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerCommandPreprocessEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerDeathEvent;
