@@ -1,8 +1,8 @@
 package no.runsafe.combatcooldown;
 
-import no.runsafe.framework.api.IDebug;
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
+import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.entity.ProjectileEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
