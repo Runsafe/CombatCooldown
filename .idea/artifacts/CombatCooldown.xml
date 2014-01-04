@@ -3,11 +3,11 @@
     <output-path>$PROJECT_DIR$/../out/</output-path>
     <root id="archive" name="CombatCooldown.jar">
       <element id="module-output" name="CombatCooldown" />
-      <element id="file-copy" path="$PROJECT_DIR$/defaultConfig.yml" />
-      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
       </element>
+      <element id="file-copy" path="$PROJECT_DIR$/src/defaults.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
     </root>
   </artifact>
 </component>
