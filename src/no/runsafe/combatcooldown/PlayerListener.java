@@ -34,6 +34,6 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 		combatMonitor.leaveCombat(event.getEntity());
 	}
 
-	private CombatMonitor combatMonitor = null;
+	private final CombatMonitor combatMonitor;
 	private final IDebug debugger;
 }
