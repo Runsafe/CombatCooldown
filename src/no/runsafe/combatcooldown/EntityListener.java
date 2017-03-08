@@ -1,6 +1,7 @@
 package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IServer;
+import no.runsafe.framework.api.entity.IProjectileSource;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
@@ -38,7 +39,11 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				{
 					RunsafeProjectile projectile = (RunsafeProjectile) attacker;
 					if (!(projectile.getEntityType() == ProjectileEntity.Egg || projectile.getEntityType() == ProjectileEntity.Snowball))
-						attackingPlayer = this.findPlayer((RunsafeLivingEntity)((RunsafeProjectile) attacker).getShooter());
+					{
+						IProjectileSource shooterSource = ((RunsafeProjectile) attacker).getShooter();
+						if((shooterSource instanceof RunsafeLivingEntity))
+							attackingPlayer = this.findPlayer((RunsafeLivingEntity) shooterSource);
+					}
 				}
 
 				if (attackingPlayer == null || attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
