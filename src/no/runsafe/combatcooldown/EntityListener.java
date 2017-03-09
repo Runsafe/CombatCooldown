@@ -39,11 +39,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				{
 					RunsafeProjectile projectile = (RunsafeProjectile) attacker;
 					if (!(projectile.getEntityType() == ProjectileEntity.Egg || projectile.getEntityType() == ProjectileEntity.Snowball))
-					{
-						IProjectileSource shooterSource = ((RunsafeProjectile) attacker).getShooter();
-						if((shooterSource instanceof RunsafeLivingEntity))
-							attackingPlayer = this.findPlayer((RunsafeLivingEntity) shooterSource);
-					}
+						attackingPlayer = projectile.getShootingPlayer();
 				}
 
 				if (attackingPlayer == null || attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
