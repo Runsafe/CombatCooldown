@@ -57,7 +57,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 
 	private boolean isSamePlayer(IPlayer one, IPlayer two)
 	{
-		return one.getName().equalsIgnoreCase(two.getName());
+		return one.equals(two);
 	}
 
 	private IPlayer findPlayer(RunsafeLivingEntity entity)
