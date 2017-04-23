@@ -1,7 +1,6 @@
 package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IServer;
-import no.runsafe.framework.api.entity.IProjectileSource;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
