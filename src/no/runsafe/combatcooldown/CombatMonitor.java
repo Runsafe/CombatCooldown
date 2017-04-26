@@ -8,6 +8,7 @@ import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.player.IPlayer;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
@@ -19,16 +20,16 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	public void leaveCombat(IPlayer player)
 	{
-		if (this.combatTimers.containsKey(player))
+		if (this.combatTimers.containsKey(player.getUniqueId()))
 		{
-			this.combatTimers.remove(player);
+			this.combatTimers.remove(player.getUniqueId());
 			player.sendColouredMessage(Constants.warningLeavingCombat);
 		}
 	}
 
 	public boolean isInCombat(IPlayer player)
 	{
-		return this.combatTimers.containsKey(player);
+		return this.combatTimers.containsKey(player.getUniqueId());
 	}
 
 	@Override
@@ -71,12 +72,12 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	private void registerPlayerTimer(final IPlayer player)
 	{
-		if (this.combatTimers.containsKey(player))
+		if (this.combatTimers.containsKey(player.getUniqueId()))
 		{
-			this.scheduler.cancelTask(this.combatTimers.get(player));
+			this.scheduler.cancelTask(this.combatTimers.get(player.getUniqueId()));
 		}
 
-		this.combatTimers.put(player, this.scheduler.startSyncTask(new Runnable()
+		this.combatTimers.put(player.getUniqueId(), this.scheduler.startSyncTask(new Runnable()
 		{
 			@Override
 			public void run()
@@ -86,7 +87,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		}, combatTime));
 	}
 
-	private final ConcurrentHashMap<IPlayer, Integer> combatTimers = new ConcurrentHashMap<IPlayer, Integer>();
+	private final ConcurrentHashMap<UUID, Integer> combatTimers = new ConcurrentHashMap<UUID, Integer>();
 	private final IScheduler scheduler;
 	private List<String> pvpWorlds;
 	private int combatTime;
