@@ -31,7 +31,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 		String commandString = event.getMessage();
 
 		debugger.debugFine("Checking if %s is engaged in combat", playerName);
-		if (this.combatMonitor.isInCombat(playerName) && !canRunCommand(player, commandString))
+		if (this.combatMonitor.isInCombat(player) && !canRunCommand(player, commandString))
 		{
 			debugger.debugFine("Blocking %s from running command %s during combat", playerName, commandString);
 			event.cancel();
@@ -43,7 +43,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 	public void OnPlayerQuit(RunsafePlayerQuitEvent event)
 	{
 		IPlayer player = event.getPlayer();
-		if (combatMonitor.isInCombat(player.getName()))
+		if (combatMonitor.isInCombat(player))
 		{
 			player.damage(500D); // This should kill them
 			ILocation location = player.getLocation();
