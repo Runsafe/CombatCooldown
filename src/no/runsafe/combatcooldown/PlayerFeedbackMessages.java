@@ -13,7 +13,7 @@ class PlayerFeedbackMessages implements IConfigurationChanged
 		warningNoCommandInCombat = configuration.getConfigValueAsString("warningNoCommandInCombat");
 	}
 
-	public static String warningEnteringCombat = "&4You are now entering PvP combat.";
-	public static String warningLeavingCombat = "&4You are now leaving PvP combat.";
-	public static String warningNoCommandInCombat = "&4You may not do this during PvP combat.";
+	public static String warningEnteringCombat;
+	public static String warningLeavingCombat;
+	public static String warningNoCommandInCombat;
 }
