@@ -36,6 +36,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	{
 		pvpWorlds = configuration.getConfigValueAsList("worlds");
 		combatTime = configuration.getConfigValueAsInt("combatTime");
+		shouldIncludeDergons = configuration.getConfigValueAsBoolean("shouldIncludeDergons");
 	}
 
 	@Override
@@ -50,6 +51,12 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 			return false;
 
 		return pvpWorlds.contains(world.getName());
+	}
+
+	public void engageInDergonCombat(IPlayer player)
+	{
+		if (shouldIncludeDergons && monitoringWorld(player.getWorld()) && player.isPvPFlagged())
+			engagePlayer(player);
 	}
 
 	public void engageInCombat(IPlayer firstPlayer, IPlayer secondPlayer)
@@ -85,4 +92,5 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	private final IScheduler scheduler;
 	private List<String> pvpWorlds;
 	private int combatTime;
+	private boolean shouldIncludeDergons;
 }

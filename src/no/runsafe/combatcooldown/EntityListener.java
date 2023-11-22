@@ -2,6 +2,7 @@ package no.runsafe.combatcooldown;
 
 import no.runsafe.framework.api.IServer;
 import no.runsafe.framework.api.event.entity.IEntityDamageByEntityEvent;
+import no.runsafe.framework.api.event.player.IPlayerCustomEvent;
 import no.runsafe.framework.api.log.IDebug;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.minecraft.entity.ProjectileEntity;
@@ -9,16 +10,34 @@ import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeLivingEntity;
 import no.runsafe.framework.minecraft.entity.RunsafeProjectile;
 import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageByEntityEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafeCustomEvent;
 
 import java.util.List;
 
-public class EntityListener implements IEntityDamageByEntityEvent
+public class EntityListener implements IEntityDamageByEntityEvent, IPlayerCustomEvent
 {
 	public EntityListener(CombatMonitor combatMonitor, IDebug debugger, IServer server)
 	{
 		this.combatMonitor = combatMonitor;
 		this.debugger = debugger;
 		this.server = server;
+	}
+
+	@Override
+	public void OnPlayerCustomEvent(RunsafeCustomEvent event)
+	{
+		if (!event.getEvent().equals("runsafe.dergon.mount"))
+			return;
+
+		IPlayer player = event.getPlayer();
+		if (player.isVanished())
+			return;
+
+		combatMonitor.engageInDergonCombat(player);
+		this.debugger.debugFine(String.format(
+			"Player %s is being picked up by a Dergon - Blocking Commands if able.",
+			player.getName()
+		));
 	}
 
 	@Override
