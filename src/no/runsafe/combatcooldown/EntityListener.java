@@ -24,34 +24,34 @@ public class EntityListener implements IEntityDamageByEntityEvent
 	@Override
 	public void OnEntityDamageByEntity(RunsafeEntityDamageByEntityEvent event)
 	{
-		if (event.getEntity() instanceof IPlayer)
+		if (!(event.getEntity() instanceof IPlayer))
+			return;
+
+		IPlayer victim = (IPlayer) event.getEntity();
+		if (victim.isVanished())
+			return;
+
+		IPlayer attackingPlayer = null;
+		RunsafeEntity attacker = event.getDamageActor();
+
+		if (attacker instanceof IPlayer)
+			attackingPlayer = (IPlayer) attacker;
+		else if (attacker instanceof RunsafeProjectile)
 		{
-			IPlayer victim = (IPlayer) event.getEntity();
-			if (!victim.isVanished())
-			{
-				IPlayer attackingPlayer = null;
-				RunsafeEntity attacker = event.getDamageActor();
-
-				if (attacker instanceof IPlayer)
-					attackingPlayer = (IPlayer) attacker;
-				else if (attacker instanceof RunsafeProjectile)
-				{
-					RunsafeProjectile projectile = (RunsafeProjectile) attacker;
-					if (!(projectile.getEntityType() == ProjectileEntity.Egg || projectile.getEntityType() == ProjectileEntity.Snowball))
-						attackingPlayer = projectile.getShootingPlayer();
-				}
-
-				if (attackingPlayer == null || attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
-					return;
-
-				this.combatMonitor.engageInCombat(attackingPlayer, victim);
-				this.debugger.debugFine(String.format(
-					"Player %s engaged in PvP with %s - Blocking commands",
-					attackingPlayer.getName(),
-					victim.getName()
-				));
-			}
+			RunsafeProjectile projectile = (RunsafeProjectile) attacker;
+			if (!(projectile.getEntityType() == ProjectileEntity.Egg || projectile.getEntityType() == ProjectileEntity.Snowball))
+				attackingPlayer = projectile.getShootingPlayer();
 		}
+
+		if (attackingPlayer == null || attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
+			return;
+
+		this.combatMonitor.engageInCombat(attackingPlayer, victim);
+		this.debugger.debugFine(String.format(
+			"Player %s engaged in PvP with %s - Blocking commands",
+			attackingPlayer.getName(),
+			victim.getName()
+		));
 	}
 
 	private boolean isSamePlayer(IPlayer one, IPlayer two)
