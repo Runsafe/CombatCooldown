@@ -1,5 +1,9 @@
 #default config.yml
 
+warningEnteringCombat: "&4You are now entering PvP combat."
+warningLeavingCombat: "&4You are now leaving PvP combat."
+warningNoCommandInCombat: "&4You may not do this during PvP combat."
+shouldIncludeDergons: true
 combatTime: 30
 worlds:
  - world

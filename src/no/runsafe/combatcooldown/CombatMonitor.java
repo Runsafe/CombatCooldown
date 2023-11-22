@@ -8,7 +8,6 @@ import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.player.IPlayer;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
@@ -20,16 +19,16 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	public void leaveCombat(IPlayer player)
 	{
-		if (this.combatTimers.containsKey(player.getUniqueId()))
+		if (this.combatTimers.containsKey(player))
 		{
-			this.combatTimers.remove(player.getUniqueId());
-			player.sendColouredMessage(Constants.warningLeavingCombat);
+			this.combatTimers.remove(player);
+			player.sendColouredMessage(PlayerFeedbackMessages.warningLeavingCombat);
 		}
 	}
 
 	public boolean isInCombat(IPlayer player)
 	{
-		return this.combatTimers.containsKey(player.getUniqueId());
+		return this.combatTimers.containsKey(player);
 	}
 
 	@Override
@@ -37,6 +36,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	{
 		pvpWorlds = configuration.getConfigValueAsList("worlds");
 		combatTime = configuration.getConfigValueAsInt("combatTime");
+		shouldIncludeDergons = configuration.getConfigValueAsBoolean("shouldIncludeDergons");
 	}
 
 	@Override
@@ -47,7 +47,16 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	private boolean monitoringWorld(IWorld world)
 	{
+		if (world == null)
+			return false;
+
 		return pvpWorlds.contains(world.getName());
+	}
+
+	public void engageInDergonCombat(IPlayer player)
+	{
+		if (shouldIncludeDergons && monitoringWorld(player.getWorld()) && player.isPvPFlagged())
+			engagePlayer(player);
 	}
 
 	public void engageInCombat(IPlayer firstPlayer, IPlayer secondPlayer)
@@ -65,30 +74,23 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	private void engagePlayer(IPlayer player)
 	{
 		if (!isInCombat(player))
-			player.sendColouredMessage(Constants.warningEnteringCombat);
+			player.sendColouredMessage(PlayerFeedbackMessages.warningEnteringCombat);
 
 		this.registerPlayerTimer(player);
 	}
 
 	private void registerPlayerTimer(final IPlayer player)
 	{
-		if (this.combatTimers.containsKey(player.getUniqueId()))
+		if (this.combatTimers.containsKey(player))
 		{
-			this.scheduler.cancelTask(this.combatTimers.get(player.getUniqueId()));
+			this.scheduler.cancelTask(this.combatTimers.get(player));
 		}
-
-		this.combatTimers.put(player.getUniqueId(), this.scheduler.startSyncTask(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				leaveCombat(player);
-			}
-		}, combatTime));
+		this.combatTimers.put(player, this.scheduler.startSyncTask(() -> leaveCombat(player), combatTime));
 	}
 
-	private final ConcurrentHashMap<UUID, Integer> combatTimers = new ConcurrentHashMap<UUID, Integer>();
+	private final ConcurrentHashMap<IPlayer, Integer> combatTimers = new ConcurrentHashMap<>();
 	private final IScheduler scheduler;
 	private List<String> pvpWorlds;
 	private int combatTime;
+	private boolean shouldIncludeDergons;
 }

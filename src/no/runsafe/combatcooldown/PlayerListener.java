@@ -35,7 +35,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 		{
 			debugger.debugFine("Blocking %s from running command %s during combat", playerName, commandString);
 			event.cancel();
-			player.sendColouredMessage(Constants.warningNoCommandInCombat);
+			player.sendColouredMessage(PlayerFeedbackMessages.warningNoCommandInCombat);
 		}
 	}
 
