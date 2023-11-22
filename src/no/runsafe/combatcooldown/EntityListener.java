@@ -34,6 +34,12 @@ public class EntityListener implements IEntityDamageByEntityEvent
 		IPlayer attackingPlayer = null;
 		RunsafeEntity attacker = event.getDamageActor();
 
+		this.debugger.debugFine(String.format(
+			"Player %s is being attacked by a %s.",
+			victim.getName(),
+			attacker.getEntityType().getName()
+		));
+
 		if (attacker instanceof IPlayer)
 			attackingPlayer = (IPlayer) attacker;
 		else if (attacker instanceof RunsafeProjectile)
@@ -43,8 +49,17 @@ public class EntityListener implements IEntityDamageByEntityEvent
 				attackingPlayer = projectile.getShootingPlayer();
 		}
 
-		if (attackingPlayer == null || attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
+		if (attackingPlayer == null)
+		{
+			this.debugger.debugFine("Victim is not being attacked by a player.");
 			return;
+		}
+
+		if (attackingPlayer.isVanished() || attackingPlayer.shouldNotSee(victim) || isSamePlayer(victim, attackingPlayer))
+		{
+			this.debugger.debugFine("Victim being attacked by exempted player.");
+			return;
+		}
 
 		this.combatMonitor.engageInCombat(attackingPlayer, victim);
 		this.debugger.debugFine(String.format(
