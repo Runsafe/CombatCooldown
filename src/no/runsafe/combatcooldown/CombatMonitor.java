@@ -22,7 +22,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		if (this.combatTimers.containsKey(player))
 		{
 			this.combatTimers.remove(player);
-			player.sendColouredMessage(Constants.warningLeavingCombat);
+			player.sendColouredMessage(PlayerFeedbackMessages.warningLeavingCombat);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	private void engagePlayer(IPlayer player)
 	{
 		if (!isInCombat(player))
-			player.sendColouredMessage(Constants.warningEnteringCombat);
+			player.sendColouredMessage(PlayerFeedbackMessages.warningEnteringCombat);
 
 		this.registerPlayerTimer(player);
 	}
