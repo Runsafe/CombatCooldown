@@ -69,7 +69,7 @@ public class EntityListener implements IEntityDamageByEntityEvent
 		return null;
 	}
 
-	private CombatMonitor combatMonitor = null;
+	private final CombatMonitor combatMonitor;
 	private final IDebug debugger;
 	private final IServer server;
 }

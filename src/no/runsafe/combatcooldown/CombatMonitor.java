@@ -46,6 +46,9 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 
 	private boolean monitoringWorld(IWorld world)
 	{
+		if (world == null)
+			return false;
+
 		return pvpWorlds.contains(world.getName());
 	}
 
@@ -75,18 +78,10 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		{
 			this.scheduler.cancelTask(this.combatTimers.get(player));
 		}
-
-		this.combatTimers.put(player, this.scheduler.startSyncTask(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				leaveCombat(player);
-			}
-		}, combatTime));
+		this.combatTimers.put(player, this.scheduler.startSyncTask(() -> leaveCombat(player), combatTime));
 	}
 
-	private final ConcurrentHashMap<IPlayer, Integer> combatTimers = new ConcurrentHashMap<IPlayer, Integer>();
+	private final ConcurrentHashMap<IPlayer, Integer> combatTimers = new ConcurrentHashMap<>();
 	private final IScheduler scheduler;
 	private List<String> pvpWorlds;
 	private int combatTime;
