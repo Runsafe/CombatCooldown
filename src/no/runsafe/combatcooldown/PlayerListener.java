@@ -16,10 +16,11 @@ import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
 
 public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDeathEvent, IPlayerQuitEvent
 {
-	public PlayerListener(CombatMonitor combatMonitor, IDebug console)
+	public PlayerListener(CombatMonitor combatMonitor, IDebug console, CombatCooldownConfig config)
 	{
 		this.combatMonitor = combatMonitor;
 		this.debugger = console;
+		this.config = config;
 		effect = new WorldBlockEffect(WorldBlockEffectType.BLOCK_DUST, Item.BuildingBlock.Bedrock);
 	}
 
@@ -35,7 +36,7 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 		{
 			debugger.debugFine("Blocking %s from running command %s during combat", playerName, commandString);
 			event.cancel();
-			player.sendColouredMessage(PlayerFeedbackMessages.warningNoCommandInCombat);
+			player.sendColouredMessage(config.getNoCommandsInCombatMessage());
 		}
 	}
 
@@ -66,5 +67,6 @@ public class PlayerListener implements IPlayerCommandPreprocessEvent, IPlayerDea
 
 	private final CombatMonitor combatMonitor;
 	private final IDebug debugger;
+	private final CombatCooldownConfig config;
 	private final IWorldEffect effect;
 }

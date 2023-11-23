@@ -1,20 +1,18 @@
 package no.runsafe.combatcooldown;
 
-import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.IWorld;
-import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginDisabled;
 import no.runsafe.framework.api.player.IPlayer;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
+public class CombatMonitor implements IPluginDisabled
 {
-	public CombatMonitor(IScheduler scheduler)
+	public CombatMonitor(IScheduler scheduler, CombatCooldownConfig config)
 	{
 		this.scheduler = scheduler;
+		this.config = config;
 	}
 
 	public void leaveCombat(IPlayer player)
@@ -22,21 +20,13 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		if (this.combatTimers.containsKey(player))
 		{
 			this.combatTimers.remove(player);
-			player.sendColouredMessage(PlayerFeedbackMessages.warningLeavingCombat);
+			player.sendColouredMessage(config.getLeavingCombatMessage());
 		}
 	}
 
 	public boolean isInCombat(IPlayer player)
 	{
 		return this.combatTimers.containsKey(player);
-	}
-
-	@Override
-	public void OnConfigurationChanged(IConfiguration configuration)
-	{
-		pvpWorlds = configuration.getConfigValueAsList("worlds");
-		combatTime = configuration.getConfigValueAsInt("combatTime");
-		shouldIncludeDergons = configuration.getConfigValueAsBoolean("shouldIncludeDergons");
 	}
 
 	@Override
@@ -50,12 +40,12 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		if (world == null)
 			return false;
 
-		return pvpWorlds.contains(world.getName());
+		return config.getPvpWorlds().contains(world.getName());
 	}
 
 	public void engageInDergonCombat(IPlayer player)
 	{
-		if (shouldIncludeDergons && monitoringWorld(player.getWorld()) && player.isPvPFlagged())
+		if (config.shouldIncludeDergons() && monitoringWorld(player.getWorld()) && player.isPvPFlagged())
 			engagePlayer(player);
 	}
 
@@ -74,7 +64,7 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 	private void engagePlayer(IPlayer player)
 	{
 		if (!isInCombat(player))
-			player.sendColouredMessage(PlayerFeedbackMessages.warningEnteringCombat);
+			player.sendColouredMessage(config.getEnteringCombatMessage());
 
 		this.registerPlayerTimer(player);
 	}
@@ -85,12 +75,10 @@ public class CombatMonitor implements IPluginDisabled, IConfigurationChanged
 		{
 			this.scheduler.cancelTask(this.combatTimers.get(player));
 		}
-		this.combatTimers.put(player, this.scheduler.startSyncTask(() -> leaveCombat(player), combatTime));
+		this.combatTimers.put(player, this.scheduler.startSyncTask(() -> leaveCombat(player), config.getCombatTime()));
 	}
 
 	private final ConcurrentHashMap<IPlayer, Integer> combatTimers = new ConcurrentHashMap<>();
 	private final IScheduler scheduler;
-	private List<String> pvpWorlds;
-	private int combatTime;
-	private boolean shouldIncludeDergons;
+	private final CombatCooldownConfig config;
 }
